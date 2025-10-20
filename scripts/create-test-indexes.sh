@@ -49,8 +49,6 @@ create_index() {
   echo ""
 }
 
-create_index "people"
-create_index "social-media-profiles"
 create_index "launches"
 create_index "releases"
 create_index "tasks"

@@ -1,20 +1,5 @@
 exports.entityConfigs = [
   {
-    entityType: 'person',
-    indexName: 'people',
-    hasMany: [
-      {
-        property: 'socialMediaProfiles',
-        foreignKey: 'personId',
-        targetEntityType: 'socialMediaProfile',
-      },
-    ],
-  },
-  {
-    entityType: 'socialMediaProfile',
-    indexName: 'social-media-profiles',
-  },
-  {
     entityType: 'launch',
     indexName: 'launches',
     hasMany: [
