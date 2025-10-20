@@ -7,34 +7,19 @@ An AWS CDK construct that syncs Dynamo items (and optionally, their associations
 - Syncs INSERT, MODIFY, and REMOVE events from DynamoDB to OpenSearch
 - Enqueues Dynamo stream events to an SQS queue for maximum parallelism
 - Automatic retries with a dead letter SQS queue
-- Can optionally add associations to documents
+- Can optionally add association properties to documents
 
 ## Usage
 
-### 1. Create a configuration file
+Create a config file
 
 ```typescript
-// my-app-config.ts
-export interface HasManyRelationship {
-  property: string;
-  foreignKey: string;
-  targetEntityType: string;
-}
-
-export interface BelongsToRelationship {
-  property: string;
-  foreignKey: string;
-  targetEntityType: string;
-}
-
-export interface EntityConfig {
-  entityType: string;
-  indexName: string;
-  hasMany?: HasManyRelationship[];
-  belongsTo?: BelongsToRelationship[];
-}
-
-export const entityConfigs: EntityConfig[] = [
+// dynamo-opensearch-sync-config.js
+exports.entityConfigs = [
+  {
+    entityType: 'user',
+    indexName: 'users',
+  },
   {
     entityType: 'launch',
     indexName: 'launches',
@@ -60,7 +45,7 @@ export const entityConfigs: EntityConfig[] = [
 ];
 ```
 
-### 2. Use the construct in your CDK stack
+Import and instantiate the `DynamoOpenSearchSync` construct in your CDK stack
 
 ```typescript
 import * as cdk from 'aws-cdk-lib';
@@ -84,77 +69,12 @@ const domain = new opensearch.Domain(stack, 'OpenSearchDomain', {
 new DynamoOpenSearchSync(stack, 'DynamoOpenSearchSync', {
   table,
   domain,
-  configFilePath: path.join(__dirname, 'my-app-config.js'),
+  configFilePath: path.join(__dirname, 'dynamo-opensearch-sync-config.js'),
 });
 ```
 
-### 3. DynamoDB item structure
+and deploy
 
-Each item must have:
-- `id`: Document ID in OpenSearch
-- `entityType`: Entity type matching config
-
-Example items:
-
-```json
-{
-  "pk": "launch1",
-  "id": "launch1",
-  "entityType": "launch",
-  "name": "Q1 Launch"
-}
 ```
-
-```json
-{
-  "pk": "release1",
-  "id": "release1",
-  "entityType": "release",
-  "launchId": "launch1",
-  "version": "1.0.0"
-}
-```
-
-### 4. OpenSearch document structure
-
-The sync will automatically:
-- Add `_lastSyncedDynamoStreamRecord` to track sync state
-- Add `releases` array to launch documents (hasMany)
-- Add `launch` object to release documents (belongsTo)
-- Filter out relationship properties to prevent circular references
-
-Example launch document:
-```json
-{
-  "id": "launch1",
-  "entityType": "launch",
-  "name": "Q1 Launch",
-  "releases": [
-    {
-      "id": "release1",
-      "entityType": "release",
-      "launchId": "launch1",
-      "version": "1.0.0",
-      "_lastSyncedDynamoStreamRecord": {...}
-    }
-  ],
-  "_lastSyncedDynamoStreamRecord": {...}
-}
-```
-
-Example release document:
-```json
-{
-  "id": "release1",
-  "entityType": "release",
-  "launchId": "launch1",
-  "version": "1.0.0",
-  "launch": {
-    "id": "launch1",
-    "entityType": "launch",
-    "name": "Q1 Launch",
-    "_lastSyncedDynamoStreamRecord": {...}
-  },
-  "_lastSyncedDynamoStreamRecord": {...}
-}
+npx cdk deploy --all --require-approval never
 ```
