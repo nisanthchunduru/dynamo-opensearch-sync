@@ -1,21 +1,4 @@
-export interface HasManyRelationship {
-  property: string;
-  foreignKey: string;
-  targetEntityType: string;
-}
-
-export interface BelongsToRelationship {
-  property: string;
-  foreignKey: string;
-  targetEntityType: string;
-}
-
-export interface EntityConfig {
-  entityType: string;
-  indexName: string;
-  hasMany?: HasManyRelationship[];
-  belongsTo?: BelongsToRelationship[];
-}
+import { EntityConfig } from './types';
 
 export const entityConfigs: EntityConfig[] = [
   {
