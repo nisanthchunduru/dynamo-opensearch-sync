@@ -1,0 +1,30 @@
+{
+  "name": "dynamo-opensearch-sync",
+  "version": "1.0.0",
+  "main": "dynamo-opensearch-sync.ts",
+  "scripts": {
+    "ada:credentials:update": "ada credentials update --provider=conduit --account=651564455537 --role=IibsAdminAccess-DO-NOT-DELETE",
+    "build": "tsc -p lambda-handlers",
+    "cdk": "cdk"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sqs": "^3.0.0",
+    "@aws-sdk/util-dynamodb": "^3.0.0",
+    "axios": "^1.6.0",
+    "aws4-axios": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "aws-cdk-lib": "^2.0.0",
+    "constructs": "^10.0.0",
+    "aws-cdk": "^2.0.0",
+    "ts-node": "^10.9.0",
+    "esbuild": "^0.21.0"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.0.0",
+    "constructs": "^10.0.0"
+  }
+}
