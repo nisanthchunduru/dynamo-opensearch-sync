@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import { DynamoOpenSearchSync } from './dynamo-opensearch-sync';
 import { DynamoOpenSearchSyncTestDynamo } from './dynamo-opensearch-sync-test-dynamo';
 import { DynamoOpenSearchSyncTestOpenSearch } from './dynamo-opensearch-sync-test-opensearch';
+import * as path from 'path';
 
 export interface DynamoOpenSearchSyncTestProps extends cdk.StackProps {
   dynamoStack: DynamoOpenSearchSyncTestDynamo;
@@ -17,7 +18,7 @@ export class DynamoOpenSearchSyncTest extends cdk.Stack {
     new DynamoOpenSearchSync(this, 'Sync', {
       table: props.dynamoStack.table,
       domain: props.openSearchStack.domain,
-      indexName: 'test-index',
+      configFilePath: path.join(__dirname, 'dynamo-opensearch-sync-test-config.js'),
       maxConcurrency: 100,
     });
   }

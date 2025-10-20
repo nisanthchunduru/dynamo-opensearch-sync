@@ -12,7 +12,7 @@ import * as path from 'path';
 export interface DynamoOpenSearchSyncProps {
   table: dynamodb.ITable;
   domain: opensearch.IDomain;
-  indexName: string;
+  configFilePath: string;
   maxConcurrency?: number;
 }
 
@@ -70,11 +70,24 @@ export class DynamoOpenSearchSync extends Construct {
       handler: 'handler',
       environment: {
         DOMAIN_ENDPOINT: props.domain.domainEndpoint,
-        INDEX_NAME: props.indexName,
       },
       timeout: cdk.Duration.minutes(5),
       bundling: {
         forceDockerBundling: false,
+        externalModules: ['./entity-config'],
+        commandHooks: {
+          beforeBundling(inputDir: string, outputDir: string): string[] {
+            return [];
+          },
+          afterBundling(inputDir: string, outputDir: string): string[] {
+            return [
+              `cp ${props.configFilePath} ${outputDir}/entity-config.js`,
+            ];
+          },
+          beforeInstall(): string[] {
+            return [];
+          },
+        },
       },
     });
 
