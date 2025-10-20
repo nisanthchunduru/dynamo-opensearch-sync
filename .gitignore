@@ -6,3 +6,4 @@ dist/
 cdk.out/
 cdk.out.deploy/
 .cdk.staging/
+!dynamo-opensearch-sync-test-config.js

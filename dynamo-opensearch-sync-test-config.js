@@ -1,6 +1,4 @@
-import { EntityConfig } from './types';
-
-export const entityConfigs: EntityConfig[] = [
+exports.entityConfigs = [
   {
     entityType: 'person',
     indexName: 'people',
